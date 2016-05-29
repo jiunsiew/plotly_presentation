@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exploratory Data Analysis with Plotly</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Exploratory Data Analysis with Plotly">
+  <meta name="author" content="Jiun Siew">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Exploratory Data Analysis with Plotly</h1>
+    <h2>MelbuRn Presentation 30 May 2016</h2>
+    <p>Jiun Siew<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <article data-timings="">
+    <!----
+Customised theme
+Colour scheme from: https://color.adobe.com/Birdfolio-Blues-color-theme-1945976/
+--->
+
+<style>
+em {
+  font-style: italic
+}
+
+
+strong {
+  font-weight: bold;
+}
+
+
+.title-slide {
+  background-color: #EFEFEF; /*#CBE7A5;  #EDE0CF; ; #CA9F9D*/
+}
+
+.title-slide hgroup > h1{
+ font-family: 'Oswald', 'Helvetica', sanserif; 
+}
+
+.title-slide hgroup > h1, 
+.title-slide hgroup > h2 {
+  color: #FF530D   /*#535E43; #EF5150*/
+}
+
+/*Change the table colours */
+table th {
+  background: #BDD4DE;
+  color: #3F5765;
+}
+
+table tr:nth-child(2n+1) {
+/*  background: #E8F2FF; */
+  background: #FFFFFF;
+}
+
+
+slide.codefont pre {
+font-size: 14px ;
+}
+
+/*
+slides > slide {
+  background: #EFEFEF !important;
+}
+*/
+</style>
+
+<h2>Overview</h2>
+
+<ol>
+<li>Front matter</li>
+<li>Motivating example</li>
+<li>Introducing Plotly</li>
+<li>WOWs &amp; WOEs</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Introduction and Objective</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><p>Introduction</p>
+
+<ul>
+<li>Engineer in signal processing</li>
+<li>Worked in forecasting (financial, energy, propensity)</li>
+<li>Now working in Hitwise (predictive modelling)</li>
+</ul></li>
+<li><p>Objective</p>
+
+<ul>
+<li>A good idea where Plotly  might be beneficial for exploratory data analysis</li>
+<li>Some interesting facts about the NY Philharmonic Orchestra</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Disclaimer</h2>
+  </hgroup>
+  <article data-timings="">
+    <div style='text-align: center;'>
+    <img src='./assets/img/disclaimer.png'/>
+</div>
+
+<ul>
+<li>No affiliation with Plotly</li>
+<li>Developed with R+RStudio environment (Viewer pane)</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Motivating Example</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The (simplified) exploratory data analysis process:</p>
+
+<pre><code class="r">rawData &lt;- get_data_from_somewhere(dataSource)   # dataSource = SQL/csv/MapReduce
+
+while (i_have_found_something = FALSE){
+  cleanedData &lt;- clean_data(rawData)        # yuck
+  df &lt;- do_other_stuff(cleanedData)         # transform, model, summarise
+  insights &lt;- visualise(df)                 # look at the pretty colours
+
+  if (insights &gt; significant_value){
+    ## EUREKA!!!
+    i_have_found_something = TRUE
+  }
+}
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>NY Philharmonic Orchestra</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>NY Philharmonic Orchestra&#39;s performance history from December 1842</li>
+<li>Publicly available on <a href="https://github.com/nyphilarchive/PerformanceHistory">github</a></li>
+<li>Extracted (from XML) composer, date, location and programID</li>
+</ul>
+
+<pre><code>##   programID       date  composer
+## 1      3853 1842-12-07 Beethoven
+## 2      3853 1842-12-07     Weber
+## 3      3853 1842-12-07    Hummel
+## 4      3853 1842-12-07          
+## 5      3853 1842-12-07     Weber
+## 6      3853 1842-12-07   Rossini
+## 7      3853 1842-12-07 Beethoven
+## 8      3853 1842-12-07    Mozart
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Explore: Summary</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code>## Classes &#39;tbl_df&#39; and &#39;data.frame&#39;:   82311 obs. of  3 variables:
+##  $ programID: int  3853 3853 3853 3853 3853 3853 3853 3853 3853 5178 ...
+##  $ date     : Date, format: &quot;1842-12-07&quot; &quot;1842-12-07&quot; ...
+##  $ composer : chr  &quot;Beethoven&quot; &quot;Weber&quot; &quot;Hummel&quot; &quot;&quot; ...
+</code></pre>
+
+<pre><code>##    programID            date              composer        
+##  Min.   :      1   Min.   :1842-12-07   Length:82311      
+##  1st Qu.:   3647   1st Qu.:1926-12-09   Class :character  
+##  Median :   7292   Median :1950-03-18   Mode  :character  
+##  Mean   :  17063   Mean   :1953-09-15                     
+##  3rd Qu.:  10803   3rd Qu.:1982-02-25                     
+##  Max.   :9913550   Max.   :2016-03-19
+</code></pre>
+
+<ul class = "build incremental">
+<li>How has the number of performances trended over time?</li>
+<li>Who are the composers with the highest number of performances?</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Explore: Visuals - Time Trend</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Simple time-series with loess fit:</p>
+
+<p><img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" /></p>
+
+<ul>
+<li><em>What year does performances pick up?</em></li>
+<li><em>What was the maximum number of performances ever done in a single year?</em></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Explore: Visual - Top N Most Performed Composers</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Ordered scatter type plot:</p>
+
+<p><img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" /></p>
+
+<ul>
+<li><em>How many times has a work by Rachmaninov been performed?</em></li>
+<li><em>What&#39;s the difference in rank between Stravinsky and Rimsky-Korsakov?</em></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>I wish I could...</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Get a good looking plot without a lot of code </li>
+<li>Interact with my data</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Introducing Plotly: Time series</h2>
+  </hgroup>
+  <article data-timings="">
+    <iframe src="./assets/widgets/plotly_perfByYear.html" 
+        height='75%' width="100%">
+</iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Introducing Plotly: Top Composers</h2>
+  </hgroup>
+  <article data-timings="">
+    <iframe src="./assets/widgets/plotly_topComposers.html" 
+        height='75%' width="100%">
+</iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>More formally</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><p>What is it?</p>
+
+<ul>
+<li>&quot;<em>Built on top of d3.js and stack.gl, plotly.js is a high-level, 
+declarative charting library. plotly.js ships with 20 chart types, 
+including 3D charts, statistical graphs, and SVG maps.</em>&quot;
+<a href="https://github.com/plotly/plotly.js">See link</a></li>
+<li>open source</li>
+<li>API&#39;s to R, Python, Matlab</li>
+</ul></li>
+<li><p>plotly package for R</p>
+
+<ul>
+<li><em>Plotly for R is an interactive, browser-based charting library built on 
+the open source JavaScript graphing library, plotly.js. It works entirely 
+locally, through the HTML widgets framework.</em></li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Goodbye Hadley...we&#39;re breaking up</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>How does this compare to ggplot2?</li>
+<li>Do we really need both?</li>
+</ul>
+
+<ul class = "build incremental">
+<li>Not quite</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Code comparison - Time series</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># ggplot way
+ggplot(nPerfByYear, aes(x = date.yr, y = nPerf)) +
+  geom_line() + 
+  theme_bw() +
+  stat_smooth() +
+  ggtitle(&quot;NY Philharmonic Performances&quot;) +
+  ylab(&quot;Number of Performances&quot;) +
+  xlab(&quot;Year&quot;)
+
+# plotly
+p &lt;- plot_ly(nPerfByYear,
+             x = date.yr,
+             y = nPerf,
+             name = &quot;Total Performances&quot;)
+fitted.val &lt;- fitted(loess(nPerf ~ lubridate::year(date.yr), data = nPerfByYear))
+p &lt;- p %&gt;% add_trace(y = fitted.val, x = date.yr, name = &quot;Loess Fit&quot;)
+</code></pre>
+
+<ul>
+<li>ggplot&#39;s <em>stat_smooth</em> makes it a bit easier to put in trend lines with error bands</li>
+<li>plotly likes <em>%&gt;%</em> </li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Code comparison - Ordered scatter plot</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># ggplot way
+n &lt;-  50
+ggplot(countsByComposer[1:n, ],
+       aes(x = reorder(composer, -nPerf), y = nPerf)) +
+  geom_point(aes(colour = rank)) +
+  scale_color_viridis() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        axis.title.x=element_blank()) +
+  ggtitle(paste0(&quot;Top &quot;, n, &quot; Composers By Performances&quot;)) +
+  ylab(&quot;Number of performances&quot;)
+
+
+# plotly
+pComposers &lt;- plot_ly(countsByComposer[1:n, ], x = composer, y = nPerf,
+        color = rank,
+        text = paste(&quot;Rank: &quot;, rank),
+        mode = &quot;markers&quot;)
+pComposers
+</code></pre>
+
+<ul>
+<li>ggplot required a few more steps to get it looking like plotly</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>ggplotly: The best of both worlds</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>You can also convert a ggplot object directly to a plotly one with <code>ggplotly</code></p>
+
+<pre><code class="r"># Summarise data
+tmpDf &lt;- plotDf.sum %&gt;%
+  filter(composer %in% countsByComposer$composer[1:12])
+
+tmpDf$composer.f &lt;- factor(tmpDf$composer, 
+                           levels = countsByComposer$composer[1:12])
+
+# Define my own coloursheme (from colorbrewer.org)
+colorScheme = c(&#39;#a6cee3&#39;,&#39;#1f78b4&#39;,&#39;#b2df8a&#39;,&#39;#33a02c&#39;,
+                &#39;#fb9a99&#39;,&#39;#e31a1c&#39;,&#39;#fdbf6f&#39;,&#39;#ff7f00&#39;,
+                &#39;#cab2d6&#39;,&#39;#6a3d9a&#39;,&#39;#ffff99&#39;,&#39;#b15928&#39;)
+
+# do a facet plot of time series for each composer
+pFacet &lt;- ggplot(tmpDf, aes(x = date.yr, y = nPerf)) +
+  geom_line(aes(colour = composer)) + 
+  facet_wrap(~composer.f) +
+  theme_bw() + 
+  ggtitle(&quot;NY Philharmonic Performances&quot;) +
+  ylab(&quot;Number of Performances&quot;) +  xlab(&quot;Year&quot;) +
+  scale_color_manual(values = colorScheme) +
+  theme(legend.position=&quot;none&quot;)
+
+ggplotly(pFacet)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>ggplotly (cont&#39;d)</h2>
+  </hgroup>
+  <article data-timings="">
+    <iframe src="./assets/widgets/plotly_timeSeriesByComposer.html" 
+        height='75%' width="100%">
+</iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Other features worth noting -- 3D plots</h2>
+  </hgroup>
+  <article data-timings="">
+    <iframe src="./assets/widgets/plotly_timeSeriesByComposer_3D.html" 
+        height='75%' width="100%">
+</iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Other features worth noting -- Maps</h2>
+  </hgroup>
+  <article data-timings="">
+    <iframe src="./assets/widgets/plotly_nPerf_Map.html" 
+        height='75%' width="100%">
+</iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Map Plot</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># marker styling
+m &lt;- list(
+  colorbar = list(title = &quot;Number of Performances (log)&quot;),
+  size = 8, opacity = 0.8, symbol = &#39;square&#39;
+)
+
+# geo styling
+g &lt;- list(
+  projection = list(type = &#39;natural earth&#39;),
+  showcountries = TRUE, 
+  showland = TRUE,
+  landcolor = toRGB(&quot;gray95&quot;),
+  subunitcolor = toRGB(&quot;gray85&quot;),
+  countrycolor = toRGB(&quot;gray85&quot;),
+  countrywidth = 0.5,
+  subunitwidth = 1
+)
+
+pMap &lt;- plot_ly(locationSummary, lat = lat, lon = lon, text = hoverText, color = nPerf.log,
+        type = &#39;scattergeo&#39;, mode = &#39;markers&#39;) %&gt;%
+  layout(title = &#39;NY Philharmonic Performances&#39;, geo = g)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Sharing</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Online via <a href="https://plot.ly">plot.ly</a></li>
+<li>As widgets + iframes</li>
+</ul>
+
+<pre><code class="r"># plot the top n
+n &lt;- 50
+pComposers &lt;- plot_ly(countsByComposer[1:n, ], x = composer, y = nPerf,
+        color = rank,
+        text = paste(&quot;Rank: &quot;, rank),
+        mode = &quot;markers&quot;)
+pComposers
+pComposerFid &lt;- &quot;plotly_topComposers.html&quot;
+htmlwidgets::saveWidget(as.widget(pComposers), pComposerFid)
+</code></pre>
+
+<pre><code>&lt;iframe src=&quot;plotly_topComposers.html&quot; 
+        height=&#39;75%&#39; width=&quot;100%&quot;&gt;
+&lt;/iframe&gt;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Summary: WOWs</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Interactivity is wonderful</li>
+<li>Plotly defaults are pretty nice \(\rightarrow\) not too much work for something 
+aesthetically pleasing</li>
+<li>One package with lots of versatility (3D surface, heatmaps, etc...)</li>
+<li><code>ggplotly</code> bridges ggplot and plotly</li>
+<li>Multiple API&#39;s mean you can have various languages with consistent looking plots </li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>Summary: WOEs</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Syntax is not like the grammar of graphics, but pretty good</li>
+<li>Does crash from time to time (not sure why)</li>
+<li>ggplotly works pretty well usually, but can have issues with many facets or
+lots of <code>aes</code> features</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>Questions?</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Thanks.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>References</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><a href="https://plot.ly/r/getting-started/">Plot.ly (Getting started)</a></li>
+<li><a href="https://plot.ly/r/reference/">Plot.ly R Reference</a></li>
+<li><a href="http://moderndata.plot.ly/about/">Plotly Blog</a></li>
+<li><a href="https://github.com/nyphilarchive/PerformanceHistory">NY Philharmonic Performance Data</a></li>
+<li><a href="https://github.com/jiunsiew/NY_Philarchive_performanceHistory">My R &amp; py scripts for getting the NY Philharmonic Data</a></li>
+<li>Code for this presentation</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='NA'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Introduction and Objective'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Disclaimer'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Motivating Example'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='NY Philharmonic Orchestra'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Explore: Summary'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Explore: Visuals - Time Trend'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Explore: Visual - Top N Most Performed Composers'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='I wish I could...'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Introducing Plotly: Time series'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Introducing Plotly: Top Composers'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='More formally'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Goodbye Hadley...we&#39;re breaking up'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Code comparison - Time series'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Code comparison - Ordered scatter plot'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='ggplotly: The best of both worlds'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='ggplotly (cont&#39;d)'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Other features worth noting -- 3D plots'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Other features worth noting -- Maps'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Map Plot'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Sharing'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='Summary: WOWs'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='Summary: WOEs'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='Questions?'>
+         24
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='References'>
+         25
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

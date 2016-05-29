@@ -1,0 +1,405 @@
+---
+title       : Exploratory Data Analysis with Plotly
+subtitle    : MelbuRn Presentation 30 May 2016
+author      : Jiun Siew
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+<!----
+Customised theme
+Colour scheme from: https://color.adobe.com/Birdfolio-Blues-color-theme-1945976/
+--->
+
+<style>
+em {
+  font-style: italic
+}
+
+
+strong {
+  font-weight: bold;
+}
+
+
+.title-slide {
+  background-color: #EFEFEF; /*#CBE7A5;  #EDE0CF; ; #CA9F9D*/
+}
+
+.title-slide hgroup > h1{
+ font-family: 'Oswald', 'Helvetica', sanserif; 
+}
+
+.title-slide hgroup > h1, 
+.title-slide hgroup > h2 {
+  color: #FF530D   /*#535E43; #EF5150*/
+}
+
+/*Change the table colours */
+table th {
+  background: #BDD4DE;
+  color: #3F5765;
+}
+
+table tr:nth-child(2n+1) {
+/*  background: #E8F2FF; */
+  background: #FFFFFF;
+}
+
+
+slide.codefont pre {
+font-size: 14px ;
+}
+
+/*
+slides > slide {
+  background: #EFEFEF !important;
+}
+*/
+</style>
+
+
+## Overview
+
+0. Front matter
+1. Motivating example
+2. Introducing Plotly
+3. WOWs & WOEs
+
+--- .class #id 
+## Introduction and Objective
+
+- Introduction
+  - Engineer in signal processing
+  - Worked in forecasting (financial, energy, propensity)
+  - Now working in Hitwise (predictive modelling)
+
+- Objective
+  - A good idea where Plotly  might be beneficial for exploratory data analysis
+  - Some interesting facts about the NY Philharmonic Orchestra
+
+---
+## Disclaimer
+<div style='text-align: center;'>
+    <img src='./assets/img/disclaimer.png'/>
+</div>
+
+- No affiliation with Plotly
+- Developed with R+RStudio environment (Viewer pane)
+
+---
+## Motivating Example 
+The (simplified) exploratory data analysis process:
+
+
+```r
+rawData <- get_data_from_somewhere(dataSource)   # dataSource = SQL/csv/MapReduce
+ 
+while (i_have_found_something = FALSE){
+  cleanedData <- clean_data(rawData)        # yuck
+  df <- do_other_stuff(cleanedData)         # transform, model, summarise
+  insights <- visualise(df)                 # look at the pretty colours
+  
+  if (insights > significant_value){
+    ## EUREKA!!!
+    i_have_found_something = TRUE
+  }
+}
+```
+
+---
+## NY Philharmonic Orchestra
+- NY Philharmonic Orchestra's performance history from December 1842
+- Publicly available on [github](https://github.com/nyphilarchive/PerformanceHistory)
+- Extracted (from XML) composer, date, location and programID
+
+
+```
+##   programID       date  composer
+## 1      3853 1842-12-07 Beethoven
+## 2      3853 1842-12-07     Weber
+## 3      3853 1842-12-07    Hummel
+## 4      3853 1842-12-07          
+## 5      3853 1842-12-07     Weber
+## 6      3853 1842-12-07   Rossini
+## 7      3853 1842-12-07 Beethoven
+## 8      3853 1842-12-07    Mozart
+```
+
+---
+## Explore: Summary
+
+
+```
+## Classes 'tbl_df' and 'data.frame':	82311 obs. of  3 variables:
+##  $ programID: int  3853 3853 3853 3853 3853 3853 3853 3853 3853 5178 ...
+##  $ date     : Date, format: "1842-12-07" "1842-12-07" ...
+##  $ composer : chr  "Beethoven" "Weber" "Hummel" "" ...
+```
+
+```
+##    programID            date              composer        
+##  Min.   :      1   Min.   :1842-12-07   Length:82311      
+##  1st Qu.:   3647   1st Qu.:1926-12-09   Class :character  
+##  Median :   7292   Median :1950-03-18   Mode  :character  
+##  Mean   :  17063   Mean   :1953-09-15                     
+##  3rd Qu.:  10803   3rd Qu.:1982-02-25                     
+##  Max.   :9913550   Max.   :2016-03-19
+```
+
+>- How has the number of performances trended over time?
+>- Who are the composers with the highest number of performances?
+
+
+---
+## Explore: Visuals - Time Trend
+Simple time-series with loess fit:
+
+<img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" />
+
+- *What year does performances pick up?*
+- *What was the maximum number of performances ever done in a single year?*
+
+---
+## Explore: Visual - Top N Most Performed Composers
+Ordered scatter type plot:
+
+<img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
+
+- *How many times has a work by Rachmaninov been performed?*
+- *What's the difference in rank between Stravinsky and Rimsky-Korsakov?*
+
+---
+## I wish I could...
+- Get a good looking plot without a lot of code 
+- Interact with my data
+
+---
+## Introducing Plotly: Time series
+<iframe src="./assets/widgets/plotly_perfByYear.html" 
+        height='75%' width="100%">
+</iframe>
+
+
+
+---
+## Introducing Plotly: Top Composers
+<iframe src="./assets/widgets/plotly_topComposers.html" 
+        height='75%' width="100%">
+</iframe>
+
+
+
+---
+## More formally
+- What is it?
+   - "*Built on top of d3.js and stack.gl, plotly.js is a high-level, 
+   declarative charting library. plotly.js ships with 20 chart types, 
+   including 3D charts, statistical graphs, and SVG maps.*"
+[See link](https://github.com/plotly/plotly.js)
+   - open source
+   - API's to R, Python, Matlab
+
+- plotly package for R
+   - *Plotly for R is an interactive, browser-based charting library built on 
+   the open source JavaScript graphing library, plotly.js. It works entirely 
+   locally, through the HTML widgets framework.*
+
+---
+## Goodbye Hadley...we're breaking up
+- How does this compare to ggplot2?
+- Do we really need both?
+
+>- Not quite
+
+--- .codefont
+## Code comparison - Time series
+
+
+```r
+# ggplot way
+ggplot(nPerfByYear, aes(x = date.yr, y = nPerf)) +
+  geom_line() + 
+  theme_bw() +
+  stat_smooth() +
+  ggtitle("NY Philharmonic Performances") +
+  ylab("Number of Performances") +
+  xlab("Year")
+
+# plotly
+p <- plot_ly(nPerfByYear,
+             x = date.yr,
+             y = nPerf,
+             name = "Total Performances")
+fitted.val <- fitted(loess(nPerf ~ lubridate::year(date.yr), data = nPerfByYear))
+p <- p %>% add_trace(y = fitted.val, x = date.yr, name = "Loess Fit")
+```
+
+- ggplot's *stat_smooth* makes it a bit easier to put in trend lines with error bands
+- plotly likes *%>%* 
+
+--- .codefont
+## Code comparison - Ordered scatter plot
+
+
+```r
+# ggplot way
+n <-  50
+ggplot(countsByComposer[1:n, ],
+       aes(x = reorder(composer, -nPerf), y = nPerf)) +
+  geom_point(aes(colour = rank)) +
+  scale_color_viridis() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        axis.title.x=element_blank()) +
+  ggtitle(paste0("Top ", n, " Composers By Performances")) +
+  ylab("Number of performances")
+
+
+# plotly
+pComposers <- plot_ly(countsByComposer[1:n, ], x = composer, y = nPerf,
+        color = rank,
+        text = paste("Rank: ", rank),
+        mode = "markers")
+pComposers
+```
+
+- ggplot required a few more steps to get it looking like plotly
+
+--- .codefont
+## ggplotly: The best of both worlds
+You can also convert a ggplot object directly to a plotly one with `ggplotly`
+
+
+
+```r
+# Summarise data
+tmpDf <- plotDf.sum %>%
+  filter(composer %in% countsByComposer$composer[1:12])
+
+tmpDf$composer.f <- factor(tmpDf$composer, 
+                           levels = countsByComposer$composer[1:12])
+
+# Define my own coloursheme (from colorbrewer.org)
+colorScheme = c('#a6cee3','#1f78b4','#b2df8a','#33a02c',
+                '#fb9a99','#e31a1c','#fdbf6f','#ff7f00',
+                '#cab2d6','#6a3d9a','#ffff99','#b15928')
+
+# do a facet plot of time series for each composer
+pFacet <- ggplot(tmpDf, aes(x = date.yr, y = nPerf)) +
+  geom_line(aes(colour = composer)) + 
+  facet_wrap(~composer.f) +
+  theme_bw() + 
+  ggtitle("NY Philharmonic Performances") +
+  ylab("Number of Performances") +  xlab("Year") +
+  scale_color_manual(values = colorScheme) +
+  theme(legend.position="none")
+
+ggplotly(pFacet)
+```
+
+---
+## ggplotly (cont'd)
+<iframe src="./assets/widgets/plotly_timeSeriesByComposer.html" 
+        height='75%' width="100%">
+</iframe>
+
+---
+## Other features worth noting -- 3D plots
+<iframe src="./assets/widgets/plotly_timeSeriesByComposer_3D.html" 
+        height='75%' width="100%">
+</iframe>
+
+---
+## Other features worth noting -- Maps
+<iframe src="./assets/widgets/plotly_nPerf_Map.html" 
+        height='75%' width="100%">
+</iframe>
+
+--- .codefont
+## Map Plot
+
+
+```r
+# marker styling
+m <- list(
+  colorbar = list(title = "Number of Performances (log)"),
+  size = 8, opacity = 0.8, symbol = 'square'
+)
+
+# geo styling
+g <- list(
+  projection = list(type = 'natural earth'),
+  showcountries = TRUE, 
+  showland = TRUE,
+  landcolor = toRGB("gray95"),
+  subunitcolor = toRGB("gray85"),
+  countrycolor = toRGB("gray85"),
+  countrywidth = 0.5,
+  subunitwidth = 1
+)
+
+pMap <- plot_ly(locationSummary, lat = lat, lon = lon, text = hoverText, color = nPerf.log,
+        type = 'scattergeo', mode = 'markers') %>%
+  layout(title = 'NY Philharmonic Performances', geo = g)
+```
+
+---
+## Sharing 
+- Online via [plot.ly](https://plot.ly)
+- As widgets + iframes
+
+
+```r
+# plot the top n
+n <- 50
+pComposers <- plot_ly(countsByComposer[1:n, ], x = composer, y = nPerf,
+        color = rank,
+        text = paste("Rank: ", rank),
+        mode = "markers")
+pComposers
+pComposerFid <- "plotly_topComposers.html"
+htmlwidgets::saveWidget(as.widget(pComposers), pComposerFid)
+```
+
+```
+<iframe src="plotly_topComposers.html" 
+        height='75%' width="100%">
+</iframe>
+```
+
+---
+## Summary: WOWs
+- Interactivity is wonderful
+- Plotly defaults are pretty nice $\rightarrow$ not too much work for something 
+aesthetically pleasing
+- One package with lots of versatility (3D surface, heatmaps, etc...)
+- `ggplotly` bridges ggplot and plotly
+- Multiple API's mean you can have various languages with consistent looking plots 
+
+
+---
+## Summary: WOEs
+   - Syntax is not like the grammar of graphics, but pretty good
+   - Does crash from time to time (not sure why)
+   - ggplotly works pretty well usually, but can have issues with many facets or
+   lots of `aes` features
+
+
+---
+## Questions?
+Thanks.
+
+---
+## References
+- [Plot.ly (Getting started)](https://plot.ly/r/getting-started/)
+- [Plot.ly R Reference](https://plot.ly/r/reference/)
+- [Plotly Blog](http://moderndata.plot.ly/about/)
+- [NY Philharmonic Performance Data](https://github.com/nyphilarchive/PerformanceHistory)
+- [My R & py scripts for getting the NY Philharmonic Data](https://github.com/jiunsiew/NY_Philarchive_performanceHistory)
+- Code for this presentation
