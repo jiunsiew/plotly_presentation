@@ -253,7 +253,7 @@ ggplot(countsByComposer[1:n, ],
 - How does this compare to ggplot2?
 - Do we really need both?
 
->- Not quite
+>- ***It depends...***
 
 --- .codefont
 ## Code comparison - Time series
@@ -411,10 +411,19 @@ htmlwidgets::saveWidget(as.widget(pComposers), pComposerFid)
 ```
 
 ---
+## Other types of charts
+- Heatmaps
+- Bar charts
+- Statistical plots (boxplots, histograms)
+- Even pie charts!! 
+- Polar charts
+- etc, etc, etc...
+
+---
 ## Summary: WOWs
 - Interactivity is wonderful
 - Plotly defaults are pretty nice $\rightarrow$ not too much work for something 
-aesthetically pleasing
+aesthetically very pleasing
 - One package with lots of versatility (3D surface, heatmaps, etc...)
 - `ggplotly` bridges ggplot and plotly
 - Multiple API's mean you can have various languages with consistent looking plots 
@@ -425,7 +434,8 @@ aesthetically pleasing
    - Syntax is not like the grammar of graphics, but pretty good
    - Does crash from time to time (not sure why)
    - ggplotly works pretty well usually, but can have issues with many facets or
-   lots of `aes` features
+   lots of `aes` features $\rightarrow$ do you really need to facet so much?
+   - Web based, so sharing in traditional outlets (print, reports etc) is a bit more tricky
 
 
 ---
