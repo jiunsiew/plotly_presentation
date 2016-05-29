@@ -411,5 +411,5 @@ Thanks.
 - [Plot.ly R Reference](https://plot.ly/r/reference/)
 - [Plotly Blog](http://moderndata.plot.ly/about/)
 - [NY Philharmonic Performance Data](https://github.com/nyphilarchive/PerformanceHistory)
-- [My R & py scripts for getting the NY Philharmonic Data](https://github.com/jiunsiew/NY_Philarchive_performanceHistory)
-- Code for this presentation
+- [R & py scripts for getting the NY Philharmonic Data](https://github.com/jiunsiew/NY_Philarchive_performanceHistory)
+- [Code for this presentation](https://github.com/jiunsiew/plotly_presentation)
