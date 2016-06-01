@@ -118,7 +118,7 @@ while (i_have_found_something = FALSE){
 - Extracted (from XML) composer, date, location and programID
 
 ```{r, echo=FALSE}
-load("~/Documents/analytics/plot.ly presentation/plotDf.RData")
+load("~/Documents/analytics/plotlyPresentation_MelbURN/data/plotDf.RData")
 head(plotDf, 8)
 ```
 
@@ -126,8 +126,6 @@ head(plotDf, 8)
 ## Explore: Summary
 
 ```{r, echo=FALSE}
-#load("~/Documents/analytics/plot.ly presentation/plotDf.RData")
-# head(plotDf, 8)
 str(plotDf)
 summary(plotDf)
 ```
@@ -146,7 +144,7 @@ library(dplyr)
 library(ggplot2)
 library(viridis)
 theme_set(theme_bw())
-load("~/Documents/analytics/plot.ly presentation/performanceData.RData")
+load("~/Documents/analytics/plotlyPresentation_MelbURN/data/performanceData.RData")
 nPerfByYear <- performanceData %>%
   filter(!is.na(composerName)) %>%
   mutate(date.yr = round_date(date, "year")) %>%
@@ -170,7 +168,7 @@ ggplot(nPerfByYear, aes(x = date.yr, y = nPerf)) +
 Ordered scatter type plot:
 
 ```{r, echo=FALSE, message=FALSE,  fig.height=5, fig.width=14, fig.align='center'}
-load("~/Documents/analytics/plot.ly presentation/plotDf.RData")
+load("~/Documents/analytics/plotlyPresentation_MelbURN/data/plotDf.RData")
 
 countsByComposer <- plotDf %>%
   filter(composer != "") %>%

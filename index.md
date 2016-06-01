@@ -120,7 +120,10 @@ while (i_have_found_something = FALSE){
 
 
 ```
+## Source: local data frame [8 x 3]
+## 
 ##   programID       date  composer
+##       (int)     (date)     (chr)
 ## 1      3853 1842-12-07 Beethoven
 ## 2      3853 1842-12-07     Weber
 ## 3      3853 1842-12-07    Hummel
@@ -160,7 +163,7 @@ while (i_have_found_something = FALSE){
 ## Explore: Visuals - Time Trend
 Simple time-series with loess fit:
 
-<img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" />
+<img src="assets/fig/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" />
 
 - *What year does performances pick up?*
 - *What was the maximum number of performances ever done in a single year?*
@@ -169,7 +172,7 @@ Simple time-series with loess fit:
 ## Explore: Visual - Top N Most Performed Composers
 Ordered scatter type plot:
 
-<img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
+<img src="assets/fig/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
 
 - *How many times has a work by Rachmaninov been performed?*
 - *What's the difference in rank between Stravinsky and Rimsky-Korsakov?*
