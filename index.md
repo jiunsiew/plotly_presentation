@@ -1,7 +1,7 @@
 ---
 title       : Exploratory Data Analysis with Plotly
-subtitle    : MelbuRn Presentation 30 May 2016
-author      : Jiun Siew
+subtitle    : Melbourne Python Users Group 6 June 2016 # MelbuRn Presentation 30 May 2016
+author      : Jiun Siew & Ed Schofield
 job         : 
 framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
